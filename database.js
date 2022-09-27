@@ -314,4 +314,44 @@ async function updateValidationStatus(collectorsEmail,Id) {
 }
 module.exports.updateValidationStatus = updateValidationStatus;
 //updateValidationStatus("shdb",2523323624);
-updateValidationStatus("shdb",8051644361);
+// updateValidationStatus("shdb",8051644361);
+
+async function findPendingCollectorOrders(){
+    const client = new MongoClient(uri);
+    const database = client.db('EWasteManagement');
+    try{
+        const citizen = database.collection('Orders');
+
+        // Creating a query
+        const query = { "Pending" : true };
+
+        const man = await citizen.find(query).toArray();
+        // console.log(man);
+        return man;
+    }
+    finally{
+        await client.close();
+    }
+}
+
+module.exports.findPendingCollectorOrders = findPendingCollectorOrders;
+
+async function findCompletedCollectorOrders(){
+    const client = new MongoClient(uri);
+    const database = client.db('EWasteManagement');
+    try{
+        const citizen = database.collection('Orders');
+
+        // Creating a query
+        const query = { "Pending" : false };
+
+        const man = await citizen.find(query).toArray();
+        // console.log(man);
+        return man;
+    }
+    finally{
+        await client.close();
+    }
+}
+
+module.exports.findCompletedCollectorOrders = findCompletedCollectorOrders;
