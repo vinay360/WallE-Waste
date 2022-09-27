@@ -31,7 +31,7 @@ router.post('/order', async function (req, res) {
     let phoneNo = req.body.phoneNo;
     let otp = Math.floor((Math.random()+0.1)*10000);
     let orderId = Math.floor((Math.random()+0.1)*10000000000);
-    // twilio.sendOtp()
+    twilio.sendOtp(phoneNo,otp,orderId);
     console.log(req.body);
     try{
         database.insertOrder(email,catagory,amount,address,latitude,longitude,date,slot,image,orderId,phoneNo,otp);
@@ -115,10 +115,14 @@ router.post('/loginReceiver', async (req,res) =>{
 router.get("/pendingOrders", async(req,res)=> {
     if(req.session.user){
         let result = await database.findCollectorOrders();
+        let pendingOrders = await database.findPendingCollectorOrders();
+        let completedOrders = await database.findCompletedCollectorOrders();
         // console.log(result);
         res.render("pendingOrders",{
             user: req.session.user,
-            orders: result
+            orders: result,
+            pending: pendingOrders,
+            completed: completedOrders
         });
     }
     else{
@@ -136,7 +140,8 @@ router.post("/signupCitizen", async(req,res)=>{
     else{
         try{
             database.insertCitizen(name,email,password,phone);
-            res.send("Account Successfully Created!")
+            // res.redirect("/route/loginReceiver");
+            res.send("Your Account Has been Created!")
         }
         catch(err){
             res.send(err);
@@ -154,7 +159,7 @@ router.post("/signupReceiver", async(req,res)=>{
     else{
         try{
             database.insertReceiver(name,email,password,phone);
-            res.send("Account Successfully Created!")
+            res.redirect("/")
         }
         catch(err){
             res.send(err);
@@ -234,7 +239,7 @@ router.get('/collectorLogin',(req,res) =>{
 })
 
 router.get("/about",(req,res)=>{
-    
+    res.render("about");
 })
 
 router.post("/otp",async (req,res) =>{
