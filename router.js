@@ -3,19 +3,20 @@ var router = express.Router();
 const database = require("./database");
 const multer  = require('multer');
 const twilio = require("./twilio");
-const fileStorageEngine = multer.diskStorage({
-    destination: (req,file,cb )=>{
-        cb(null,"./uploads");
-    },
-    filename: (req,file,cb)=>{
-        cb(null, Date.now()+'--'+ file.originalname)
-    }
-})
 
-const upload = multer({
-    storage: fileStorageEngine
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+    cb(null, './public/uploads')
+        },
+    filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.fieldname + '-' + uniqueSuffix+'.png')
+}
 });
 
+const upload = multer({ storage: storage })
+
+// router.post('/order', async function (req, res) {
 router.post('/order', upload.single('image'), function (req, res) {
     let email=req.session.user.email;
     let catagory = req.body.catagory;
