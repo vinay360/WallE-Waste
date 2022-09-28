@@ -16,9 +16,7 @@ const upload = multer({
     storage: fileStorageEngine
 });
 
-router.post('/order', async function (req, res) {
-    // console.log(image);
-    // res.send("File Upload Successfully!");
+router.post('/order', upload.single('image'), function (req, res) {
     let email=req.session.user.email;
     let catagory = req.body.catagory;
     let amount = req.body.amount;
@@ -27,16 +25,13 @@ router.post('/order', async function (req, res) {
     let address = req.body.address;
     let date = req.body.StartDate;
     let slot = req.body.slot;
-    let image = req.body.image;
+    let image = req.file.filename;
     let phoneNo = req.body.phoneNo;
     let otp = Math.floor((Math.random()+0.1)*10000);
     let orderId = Math.floor((Math.random()+0.1)*10000000000);
     twilio.sendOtp(phoneNo,otp,orderId);
-    console.log(req.body);
     try{
         database.insertOrder(email,catagory,amount,address,latitude,longitude,date,slot,image,orderId,phoneNo,otp);
-        // var pastOrders = database.findCitizenOrders(email);
-        // console.log(pastOrders);
         res.render("orderplaced", {orderID:orderId});
     }
     catch(err){
