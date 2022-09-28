@@ -3,12 +3,12 @@
     <div class="title"><h1>Pickup Details</h1></div>
     <div class="pickup">
         <div class="left">
-            <form method="POST" action="/route/order">
+            <form method="POST" action="/route/order" enctype="multipart/form-data">
                 <div class="catagory">
                     <label for="catagory">Product Details :</label>
                     <select name="catagory" id="" required>
-                        <option value="Recyclable">Recyclable</option>
-                        <option value="NonRecyclable">Non Recyclable</option>
+                        <option value="recyclable">Recyclable</option>
+                        <option value="nonrecyclable">Non Recyclable</option>
                     </select>
                 </div>
                 <div class="amount">
